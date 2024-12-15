@@ -1,34 +1,40 @@
 #!/usr/bin/env python
 """
-Module repo captures the set union of all packages (pkg.Package) available for installation.
+Module fsm.cli provides the command line interface for the fsm package.
 """
 
 # Forward referencing of types, e.g. typehints in class Node below.
 from __future__ import annotations
 import logging
-
 logger = logging.getLogger(__name__)  # logger.setLevel(logging.DEBUG)
 
 __version__ = "0.1.0"
 __author__ = "Mike Carifio <mike@carif.io>"
 
-
 import json
 import sys
-import unittest
+# import unittest
+import pytest
 import typing as t
-from . import dispatcher
+import fire
+# from . import dispatcher
 from . import pkg
 from . import graph
 from . import repo
 from . import resolver
 
-class TestCase(unittest.TestCase):
+class Tests:
+    """
+    Class Tests organizes all pytest unit tests for this module. A named class
+    lets us move the tests around as a unit.
+
+    You can run the tests with: `python -m fsm.cli pt` or `pytest fsm/cli.py`
+    """
     def test_always_passes(self):
-        self.assertTrue(True)
+        assert True
 
 
-def on_version(rest: list[str]):
+def version(*rest: list[str]):
     """
     Report the version of this module a.k.a. `__version__` (if it's supplied)
     :param rest: ignored
@@ -37,56 +43,35 @@ def on_version(rest: list[str]):
     print(globals().get("__version__", "tbs"))
 
 
-def on_about(rest: list[str]):
+def about(*rest: list[str]):
     """
     Describe this module in some way, tbs.
     :param rest:
     :return:
     """
-    print(*rest)
+    print(__doc__)
 
-
-def on_runner(rest: list[str]):
+def pt(*rest: list[str])->int:
     """
-    A more manual and explicit `on_test()` stubbed out for later refinement.
-    :param rest: ignored
-    :return: bool, True means the suite succeeded, False otherwise.
-    """
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    suite.addTests(loader.loadTestsFromTestCase(TestCase))
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
-
-
-def on_test(rest: list[str]):
-    """
-    Run all classes derived from unittest.TestCase in this module. Keeps implementation and testcases together in
+    Run all tests in class Tests in this module. Keeps implementation and testcases together in
     a single file.
-    :param rest: additional arguments to unittest.main()
-    :return:
+    :param rest: additional arguments to pytest.main(), not actually used yet
+    :return: 0 if all tests pass, >0 otherwise
     """
-    unittest.main(module=sys.modules[__name__], verbosity=2, argv=["test"], *rest)
+    exit(pytest.main([ "--verbose", *sys.argv[2:], __file__ ]))
 
 
-def on_main(rest: list[str]) -> t.List[json]:
-    """
-    The main entry point
-    """
-    print(dispatcher.caller(), *rest)
-
-
-def on_install(rest: list[str]):
+def install(*rest: list[str]):
     """
     install a set of packages described by rest in a transactional fashion
     """
-
-    print("tbs", dispatcher.caller(), *rest, file=sys.stderr)
+    print("install tbs", rest, file=sys.stderr)
 
 
 def main():
-    dispatcher.mkdispatch(globals())(sys.argv)
+    # fire dispatches by verb == function name, e.g. 'pt' => pt()
+    fire.Fire()
 
-
+# dispatched via setuptools
 if __name__ == "__main__":
     main()

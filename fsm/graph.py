@@ -1,5 +1,6 @@
 """
-Module `graph` does just enough discrete math to represent a graph of pkgs. Some of the packages are installed.
+Module `graph` does just enough discrete math to represent a graph of pkgs. It will be replaced by
+networkX. Some of the packages are installed.
 Some are candidates for installation. The graph can be cyclic. A node may have incoming edges from different nodes. Two different
 nodes can indirectly have outgoing edges from different nodes. The cycles can cause infinite loops when traversing the graph, therefore
 we must ensure we stop traversing when encountering seen nodes.
@@ -23,7 +24,6 @@ python usage:
 # Forward referencing of types, e.g. typehints in class Node below.
 from __future__ import annotations
 import logging
-
 logger = logging.getLogger(__name__)  # logger.setLevel(logging.DEBUG)
 
 __version__ = "0.1.0"
@@ -35,9 +35,12 @@ import random
 import sys
 import os
 
-import unittest
+# import unittest
+import pytest
+import box
 import typing as t
-from . import dispatcher
+import fire
+# from . import dispatcher
 
 
 class RecursionLimit:
@@ -221,7 +224,12 @@ class Node:
         return len(self.preorder(id))
 
 
-class TestCase(unittest.TestCase):
+@pytest.fixture(scope="module")
+def testcases():
+    return box.Box(nothing=Node(), smallest=Node(), smallest_make=Node.make())
+
+
+class Tests:
     class Content:
         def __init__(self, _id: str | int, value: str | int = random.random()):
             self._id = _id
@@ -245,163 +253,151 @@ class TestCase(unittest.TestCase):
         def __repr__(self):
             return f"${self.__class__.__name__}(id={self.id}, value={self.value})"
 
-    def setUp(self):
-        self.nothing: Node = Node()
-        self.smallest: Node = Node()
-        self.smallest_make: Node = Node.make()
-        self.top_child1: Node = Node(
-            contents=dict(id="top", value=0),
-            outgoing=set([Node(dict(id="child0", value=1))]),
-        )
-        self.top_child2: Node = Node(
-            contents=dict(id="top", value=0),
-            outgoing=set([Node(dict(id="child0", value=1)), Node(dict(id="child1", value=1))]),
-        )
-        self.bottom: Node = Node(contents=dict(id="bottom", value=-1))
-        self.diamond: Node = Node(
-            contents=dict(id="top", value=0),
-            outgoing=set(
-                [
-                    Node(dict(id="left", value=1), outgoing=set([self.bottom])),
-                    Node(dict(id="right", value=2), outgoing=set([self.bottom])),
-                ]
-            ),
-        )
+        # self.top_child1: Node = Node(
+        #     contents=dict(id="top", value=0),
+        #     outgoing=set([Node(dict(id="child0", value=1))]),
+        # )
+        # self.top_child2: Node = Node(
+        #     contents=dict(id="top", value=0),
+        #     outgoing=set([Node(dict(id="child0", value=1)), Node(dict(id="child1", value=1))]),
+        # )
+        # self.bottom: Node = Node(contents=dict(id="bottom", value=-1))
+        # self.diamond: Node = Node(
+        #     contents=dict(id="top", value=0),
+        #     outgoing=set(
+        #         [
+        #             Node(dict(id="left", value=1), outgoing=set([self.bottom])),
+        #             Node(dict(id="right", value=2), outgoing=set([self.bottom])),
+        #         ]
+        #     ),
+        # )
+        #
+        # self.cbottom = Node(contents=self.Content("cbottom", "bottom"))
+        # self.cleft = Node(contents=self.Content("cleft", "left"), outgoing=set([self.cbottom]))
+        # self.cright = Node(contents=self.Content("cright", "right"), outgoing=set([self.cbottom]))
+        # self.ctop = Node(
+        #     contents=self.Content("ctop", "top"),
+        #     outgoing=set([self.cleft, self.cright]),
+        # )
+        #
+        # self.instances = [
+        #     self.smallest,
+        #     self.smallest_make,
+        #     self.top_child1,
+        #     self.top_child2,
+        #     self.bottom,
+        #     self.diamond,
+        #     self.cbottom,
+        #     self.cleft,
+        #     self.cright,
+        #     self.ctop,
+        # ]
 
-        self.cbottom = Node(contents=self.Content("cbottom", "bottom"))
-        self.cleft = Node(contents=self.Content("cleft", "left"), outgoing=set([self.cbottom]))
-        self.cright = Node(contents=self.Content("cright", "right"), outgoing=set([self.cbottom]))
-        self.ctop = Node(
-            contents=self.Content("ctop", "top"),
-            outgoing=set([self.cleft, self.cright]),
-        )
+    def test_always_passes(self, testcases):
+        assert True;
 
-        self.instances = [
-            self.smallest,
-            self.smallest_make,
-            self.top_child1,
-            self.top_child2,
-            self.bottom,
-            self.diamond,
-            self.cbottom,
-            self.cleft,
-            self.cright,
-            self.ctop,
-        ]
+    def test_smallest_node(self, testcases):
+        smallest = testcases.smallest
+        assert not smallest.contents
+        assert len(smallest) == 1
 
-    def test_always_passes(self):
-        self.assertTrue(True)
-
-    def test_smallest_node(self):
-        n = Node()
-        self.assertFalse(n.contents)
-        self.assertEqual(len(n), 1)
-
-    def test_make_smallest_node(self):
-        n = Node.make()
-        self.assertFalse(n.contents)
-        self.assertEqual(len(n), 1)
-
-    def test_node_no_links(self):
-        value0 = dict(id=0, value=0)
-        n = Node(value0)
-        self.assertEqual(n.contents, value0)
-        self.assertEqual(n.incoming, set())
-        self.assertEqual(n.outgoing, set())
-        self.assertEqual(len(n), 1)
-
-    def test_make_node_no_links(self):
-        value0 = dict(id=0, value=0)
-        n = Node.make(value0)
-        self.assertEqual(n.contents, value0)
-        self.assertEqual(n.incoming, set())
-        self.assertEqual(n.outgoing, set())
-        self.assertEqual(len(n), 1)
-
-    def test_node_1_outgoing(self):
-        value0 = dict(id=0, value=0)
-        top = Node(value0)
-        self.assertEqual(top.contents, value0)
-        self.assertEqual(top.incoming, set())
-        self.assertEqual(top.outgoing, set())
-        self.assertEqual(len(top), 1)
-
-        value1 = dict(id=1, value=1)
-        child = Node(value1)
-        self.assertEqual(top.contents, value0)
-        self.assertEqual(top.incoming, set())
-        self.assertEqual(top.outgoing, set())
-        self.assertEqual(len(top), 1)
-
-        top.outgoing.add(child)
-        self.assertEqual(top.contents, value0)
-        self.assertEqual(top.incoming, set())
-        self.assertEqual(top.outgoing, set([child]))
-        self.assertEqual(len(top), 2)
-
-        self.assertSetEqual(top.outgoing, set([child]))
-        self.assertSetEqual(top.incoming, set())
-
-    def test_repr(self):
-        # print(f'test_repr: {self.nothing}')
-        # print(f'test_repr: {self.smallest}')
-        # print(f'test_repr: {self.smallest_make}')
-        # print(f'test_repr: {self.top_child1}')
-        # print(f'test_repr: {self.top_child2}')
-        print("test_repr: ", self.instances)
-        self.assertTrue(True)
-
-    def test_preorder(self):
-        for i, n in enumerate(self.instances):
-            results = n.preorder(repr)
-            print(f"test_preorder results for {i}: {results}")
-        self.assertTrue(True)
-
-    def test_postorder(self):
-        for i, n in enumerate(self.instances):
-            results = n.postorder(repr)
-            print(f"test_postorder results for {i}: {results}", file=sys.stderr)
-        self.assertTrue(True)
-
-    def test_postorder_yield(self):
-        for i, n in enumerate(self.instances):
-            result = list(n.postorder_yield(repr))
-            print(f"test_postorder_yield results for {i}: {result}", file=sys.stderr)
-        self.assertTrue(True)
-
-    def test_postorder_yield_iter(self):
-        for i, n in enumerate(self.instances):
-            for visit in n.postorder_yield(repr):
-                print(f"test_postorder_yield_iter for {n}: {visit}", file=sys.stderr)
-        self.assertTrue(True)
+    # def test_make_smallest_node(self):
+    #     n = Node.make()
+    #     self.assertFalse(n.contents)
+    #     self.assertEqual(len(n), 1)
+    #
+    # def test_node_no_links(self):
+    #     value0 = dict(id=0, value=0)
+    #     n = Node(value0)
+    #     self.assertEqual(n.contents, value0)
+    #     self.assertEqual(n.incoming, set())
+    #     self.assertEqual(n.outgoing, set())
+    #     self.assertEqual(len(n), 1)
+    #
+    # def test_make_node_no_links(self):
+    #     value0 = dict(id=0, value=0)
+    #     n = Node.make(value0)
+    #     self.assertEqual(n.contents, value0)
+    #     self.assertEqual(n.incoming, set())
+    #     self.assertEqual(n.outgoing, set())
+    #     self.assertEqual(len(n), 1)
+    #
+    # def test_node_1_outgoing(self):
+    #     value0 = dict(id=0, value=0)
+    #     top = Node(value0)
+    #     self.assertEqual(top.contents, value0)
+    #     self.assertEqual(top.incoming, set())
+    #     self.assertEqual(top.outgoing, set())
+    #     self.assertEqual(len(top), 1)
+    #
+    #     value1 = dict(id=1, value=1)
+    #     child = Node(value1)
+    #     self.assertEqual(top.contents, value0)
+    #     self.assertEqual(top.incoming, set())
+    #     self.assertEqual(top.outgoing, set())
+    #     self.assertEqual(len(top), 1)
+    #
+    #     top.outgoing.add(child)
+    #     self.assertEqual(top.contents, value0)
+    #     self.assertEqual(top.incoming, set())
+    #     self.assertEqual(top.outgoing, set([child]))
+    #     self.assertEqual(len(top), 2)
+    #
+    #     self.assertSetEqual(top.outgoing, set([child]))
+    #     self.assertSetEqual(top.incoming, set())
+    #
+    # def test_repr(self):
+    #     # print(f'test_repr: {self.nothing}')
+    #     # print(f'test_repr: {self.smallest}')
+    #     # print(f'test_repr: {self.smallest_make}')
+    #     # print(f'test_repr: {self.top_child1}')
+    #     # print(f'test_repr: {self.top_child2}')
+    #     print("test_repr: ", self.instances)
+    #     self.assertTrue(True)
+    #
+    # def test_preorder(self):
+    #     for i, n in enumerate(self.instances):
+    #         results = n.preorder(repr)
+    #         print(f"test_preorder results for {i}: {results}")
+    #     self.assertTrue(True)
+    #
+    # def test_postorder(self):
+    #     for i, n in enumerate(self.instances):
+    #         results = n.postorder(repr)
+    #         print(f"test_postorder results for {i}: {results}", file=sys.stderr)
+    #     self.assertTrue(True)
+    #
+    # def test_postorder_yield(self):
+    #     for i, n in enumerate(self.instances):
+    #         result = list(n.postorder_yield(repr))
+    #         print(f"test_postorder_yield results for {i}: {result}", file=sys.stderr)
+    #     self.assertTrue(True)
+    #
+    # def test_postorder_yield_iter(self):
+    #     for i, n in enumerate(self.instances):
+    #         for visit in n.postorder_yield(repr):
+    #             print(f"test_postorder_yield_iter for {n}: {visit}", file=sys.stderr)
+    #     self.assertTrue(True)
 
 
 # cli actions
 
 
-def on_version(rest: list[str]):
+def version(*rest: list[str]):
     print(globals()["__version__"] or "unknown")
 
 
-def on_about(rest: list[str]):
-    print(*rest)
+def about(*rest: list[str]):
+    print(__doc__)
 
 
-def on_runner(rest: list[str]):
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    suite.addTests(loader.loadTestsFromTestCase(TestCase))
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
-
-
-def on_test(rest: list[str]):
+def pt(*rest: list[str]):
     # TODO mike@carif.io: dispatcher polluates(?) unittest.main() so I need to state the module explicitly.
-    unittest.main(module=sys.modules[__name__], verbosity=2, argv=["test"], buffer=False)
+    exit(pytest.main(["--verbose", *sys.argv[2:], __file__]))
 
 
 def main():
-    dispatcher.mkdispatch(globals())(sys.argv)
+    fire.Fire()
 
 
 if __name__ == "__main__":

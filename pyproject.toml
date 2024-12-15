@@ -42,6 +42,7 @@ pydantic = "*"
 invoke = "*"
 httpx = "*"
 # aoihttp = "*"
+python-box = "*"
 
 [tool.poetry.dev-dependencies] # see [tool.doc.poetry.dev-dependencies] for doc urls
 bumpversion = "*"
@@ -63,6 +64,7 @@ fire = [ "https://google.github.io/python-fire/guide/", ]
 pydantic = [ "https://docs.pydantic.dev/latest/", ]
 invoke = [ "https://www.pyinvoke.org/", ]
 httpx = [ "https://www.python-httpx.org/", ]
+python-box = [ "https://github.com/cdgriffith/Box", ]
 
 [tool.doc.poetry.dev-dependencies]
 bumpversion = [ "https://pypi.org/project/bumpversion/", ]

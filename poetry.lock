@@ -12,6 +12,28 @@ files = [
 ]
 
 [[package]]
+name = "anyio"
+version = "4.7.0"
+description = "High level compatibility layer for multiple asynchronous event loop implementations"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "anyio-4.7.0-py3-none-any.whl", hash = "sha256:ea60c3723ab42ba6fff7e8ccb0488c898ec538ff4df1f1d5e642c3601d07e352"},
+    {file = "anyio-4.7.0.tar.gz", hash = "sha256:2f834749c602966b7d456a7567cafcb309f96482b5081d14ac93ccd457f9dd48"},
+]
+
+[package.dependencies]
+exceptiongroup = {version = ">=1.0.2", markers = "python_version < \"3.11\""}
+idna = ">=2.8"
+sniffio = ">=1.1"
+typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
+
+[package.extras]
+doc = ["Sphinx (>=7.4,<8.0)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx_rtd_theme"]
+test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypothesis (>=4.0)", "psutil (>=5.9)", "pytest (>=7.0)", "pytest-mock (>=3.6.1)", "trustme", "truststore (>=0.9.1)", "uvloop (>=0.21)"]
+trio = ["trio (>=0.26.1)"]
+
+[[package]]
 name = "astroid"
 version = "3.3.6"
 description = "An abstract syntax tree for Python with inference support."
@@ -95,6 +117,17 @@ files = [
 
 [package.dependencies]
 bump2version = "*"
+
+[[package]]
+name = "certifi"
+version = "2024.12.14"
+description = "Python package for providing Mozilla's CA Bundle."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "certifi-2024.12.14-py3-none-any.whl", hash = "sha256:1275f7a45be9464efc1173084eaa30f866fe2e47d389406136d332ed4967ec56"},
+    {file = "certifi-2024.12.14.tar.gz", hash = "sha256:b650d30f370c2b724812bee08008be0c4163b163ddaec3f2546c1caf65f191db"},
+]
 
 [[package]]
 name = "click"
@@ -269,6 +302,76 @@ files = [
 mccabe = ">=0.7.0,<0.8.0"
 pycodestyle = ">=2.12.0,<2.13.0"
 pyflakes = ">=3.2.0,<3.3.0"
+
+[[package]]
+name = "h11"
+version = "0.14.0"
+description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
+    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
+]
+
+[[package]]
+name = "httpcore"
+version = "1.0.7"
+description = "A minimal low-level HTTP client."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "httpcore-1.0.7-py3-none-any.whl", hash = "sha256:a3fff8f43dc260d5bd363d9f9cf1830fa3a458b332856f34282de498ed420edd"},
+    {file = "httpcore-1.0.7.tar.gz", hash = "sha256:8551cb62a169ec7162ac7be8d4817d561f60e08eaa485234898414bb5a8a0b4c"},
+]
+
+[package.dependencies]
+certifi = "*"
+h11 = ">=0.13,<0.15"
+
+[package.extras]
+asyncio = ["anyio (>=4.0,<5.0)"]
+http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (==1.*)"]
+trio = ["trio (>=0.22.0,<1.0)"]
+
+[[package]]
+name = "httpx"
+version = "0.28.1"
+description = "The next generation HTTP client."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad"},
+    {file = "httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc"},
+]
+
+[package.dependencies]
+anyio = "*"
+certifi = "*"
+httpcore = "==1.*"
+idna = "*"
+
+[package.extras]
+brotli = ["brotli", "brotlicffi"]
+cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
+http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (==1.*)"]
+zstd = ["zstandard (>=0.18.0)"]
+
+[[package]]
+name = "idna"
+version = "3.10"
+description = "Internationalized Domain Names in Applications (IDNA)"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3"},
+    {file = "idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9"},
+]
+
+[package.extras]
+all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2)"]
 
 [[package]]
 name = "iniconfig"
@@ -650,6 +753,41 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
+name = "python-box"
+version = "7.3.0"
+description = "Advanced Python dictionaries with dot notation access"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "python_box-7.3.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:a2131477ed02aa3609b348dad0697b70d84968d6440387898bb9075f461ef9bf"},
+    {file = "python_box-7.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3284cf583476af63c4f24168b6e1307503322dccd9b3dc2c924f5e69f79e7ab5"},
+    {file = "python_box-7.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:2718cf4c8dcc091d1c56a1a297804ab7973271391a2d2d34d37740820bbd1fda"},
+    {file = "python_box-7.3.0-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:e40fe08b218b3d07a50d6eb1c62edce8d0636d6bd1e563907bc86018a78e5826"},
+    {file = "python_box-7.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bd13e2b964ed527e03409cb1fb386d8723e0e69caf0f507af60d64102c13d363"},
+    {file = "python_box-7.3.0-cp311-cp311-win_amd64.whl", hash = "sha256:d661fb9c6ff6c730b53fe859754624baa14e37ee3d593525382b20194efad367"},
+    {file = "python_box-7.3.0-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:6c3809f78f7c829e45626990a891d93214748938b9c0236dc6d0f2e8c400d325"},
+    {file = "python_box-7.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c233b94bf3b95d7d9dc01ed1ee5636800174345810b319eb87219b760edbb54f"},
+    {file = "python_box-7.3.0-cp312-cp312-win_amd64.whl", hash = "sha256:9a22cc82e78225a419c4da02f53d6beb5c5cbd2fe5f63c13dab81e4f27b8c929"},
+    {file = "python_box-7.3.0-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:1f7b93c5ab4027b12ba67baffa8db903557e557250e01b91226d7a1b9688cf77"},
+    {file = "python_box-7.3.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:71ed234c1cff7f7197103bb11d98559032c0beac34db0c62dd5bd53e2b2a6963"},
+    {file = "python_box-7.3.0-cp313-cp313-win_amd64.whl", hash = "sha256:1144c9e5d40a2cbe34d1ec9a13abfc557e8e9e2fbf15f14314c87b6113de178f"},
+    {file = "python_box-7.3.0-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:df77730baabf45b1682ead1c470e84a530f8ceb0295263a89f0ebc04ef7f363c"},
+    {file = "python_box-7.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:36bef944e61672b300c1d56d16db8a43ee4af9ab5678492a5e003368d2c64a6e"},
+    {file = "python_box-7.3.0-cp39-cp39-win_amd64.whl", hash = "sha256:b35a2262a4e1ccfba90ce8e2018aa367f8a46a519632884006fa3153b266f184"},
+    {file = "python_box-7.3.0-py3-none-any.whl", hash = "sha256:b1139bffe91bd317fd686c4c29ffc84115c1967af14112c5c4a8ac51937d530c"},
+    {file = "python_box-7.3.0.tar.gz", hash = "sha256:39a85ba457d07122226ca60597882d763549713ab56ac7d55da41c4ad0e89a05"},
+]
+
+[package.extras]
+all = ["msgpack", "ruamel.yaml (>=0.17)", "toml"]
+msgpack = ["msgpack"]
+pyyaml = ["PyYAML"]
+ruamel-yaml = ["ruamel.yaml (>=0.17)"]
+toml = ["toml"]
+tomli = ["tomli", "tomli-w"]
+yaml = ["ruamel.yaml (>=0.17)"]
+
+[[package]]
 name = "setuptools"
 version = "75.6.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
@@ -689,6 +827,17 @@ tomli = {version = ">=1", markers = "python_version < \"3.11\""}
 docs = ["entangled-cli (>=2.0,<3.0)", "mkdocs", "mkdocs-entangled-plugin", "mkdocs-material", "mkdocstrings[python]", "pygments"]
 rich = ["rich"]
 test = ["build", "pytest", "rich", "typing-extensions", "wheel"]
+
+[[package]]
+name = "sniffio"
+version = "1.3.1"
+description = "Sniff out which async library your code is running under"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "sniffio-1.3.1-py3-none-any.whl", hash = "sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2"},
+    {file = "sniffio-1.3.1.tar.gz", hash = "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc"},
+]
 
 [[package]]
 name = "termcolor"
@@ -781,4 +930,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4"
-content-hash = "42c3f98ac189a1cec917f961e2d3423a248e53f2dcc99855946c1a498134fa79"
+content-hash = "3bd66235f999fe6b5ee44b5b95f80fe8167a33924a947acfdba76639973f5757"

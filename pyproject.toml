@@ -40,6 +40,8 @@ fire = "*"
 pydantic = "*"
 # TODO mike@carif.io: airflow https://airflow.apache.org/ instead?
 invoke = "*"
+httpx = "*"
+# aoihttp = "*"
 
 [tool.poetry.dev-dependencies] # see [tool.doc.poetry.dev-dependencies] for doc urls
 bumpversion = "*"
@@ -60,6 +62,7 @@ networkx = [ "https://networkx.org/documentation/stable/reference/",
 fire = [ "https://google.github.io/python-fire/guide/", ]
 pydantic = [ "https://docs.pydantic.dev/latest/", ]
 invoke = [ "https://www.pyinvoke.org/", ]
+httpx = [ "https://www.python-httpx.org/", ]
 
 [tool.doc.poetry.dev-dependencies]
 bumpversion = [ "https://pypi.org/project/bumpversion/", ]

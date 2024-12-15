@@ -31,9 +31,8 @@ import unittest
 import inspect
 import typing as t
 import enum  # for Package.Kind
-import fsm.dispatcher as dispatcher
-from fsm.checker import check  # for Package.conforms()
-
+from . import dispatcher
+from .checker import check
 
 class Version:
     # TODO mike@carif.io deferred: the semantics of a package version really depend on the package type, e.g. `rpm`, `apt` and so forth.

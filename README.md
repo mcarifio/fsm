@@ -108,7 +108,7 @@ immediately before use. Well, not node of course, which motivated deno in part. 
 shell script to install it -- oh the luxury! -- which sometimes actually ran to completion without error. Maybe even worked!
 
 fsm started life as a take-home programming assignment for a job. I used it to review various python programming approaches, some old and
-some new(er) and, of course, to demonstrate my tech chops (ahem). But this also dovetailed with another little hacking exercise [`bashenv`](https://github.com/mcarifio/bashenv/), which follows in the vein of [oh-my-bash](https://github.com/ohmybash/oh-my-bash) without either the completeness or polish.
+some new(er) and, of course, to demonstrate my tech chops (ahem). But this also dovetailed with another little hacking exercise [bashenv](https://github.com/mcarifio/bashenv/), which follows in the vein of [oh-my-bash](https://github.com/ohmybash/oh-my-bash) without either the completeness or polish.
 Besides flexing my bash scripting skills, especially bash functions, `bashenv` generates an installation script for a command once you
 select the format you want (e.g. `dnf`, `pip`, `asdf` and so on). If you've installed something, `bashenv` will create functions to wrap
 the relevant command with _your_ preferred default arguments. If the command provides completions, there's a convention to load them.

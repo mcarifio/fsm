@@ -17,12 +17,11 @@ import json
 import sys
 import unittest
 import typing as t
-import fsm.dispatcher as dispatcher
-
-import fsm.graph as graph
-import fsm.repo as repo
-import fsm.resolver as resolver
-
+from . import dispatcher
+from . import pkg
+from . import graph
+from . import repo
+from . import resolver
 
 class TestCase(unittest.TestCase):
     def test_always_passes(self):

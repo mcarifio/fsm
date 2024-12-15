@@ -20,33 +20,62 @@ classifiers=[
     'Programming Language :: Python :: 3.10',
 ]
 # installed in poetry venv as ${tool.poetry.name}
-packages = [ { include = "fsm" } ]
+packages = [ { include = "fsm" } ] #, { exclude = [ "*.pyc", ] } ]
 
-[[tool.poetry.source]]
-name = "private"
-url = "https://github.com/mcarifio/fsm"
 
 # [tools.poetry.include]
 # files =  [ "*.toml", "*.md" ]
 
-# poetry install
-[tool.poetry.dependencies]
+
+
+
+# poetry install # install dependencies
+# poetry update # install changes, update poetry.lock
+[tool.poetry.dependencies] # see [tool.doc.poetry.dependencies] for doc urls
 # The python type statement for type aliases arrives with python 3.10, enum.NamedDict() in 3.13.
 python = ">=3.10,<4"
 toml = "*"
 networkx = "*"
-google-fire = "*"
+fire = "*"
+pydantic = "*"
+# TODO mike@carif.io: airflow https://airflow.apache.org/ instead?
+invoke = "*"
 
-[tool.poetry.dev-dependencies]
-# bumpversion = "*"
-# coverage = "*"
-# flake8 = "*"
-# invoke = "*"
-# isort = "*"
+[tool.poetry.dev-dependencies] # see [tool.doc.poetry.dev-dependencies] for doc urls
+bumpversion = "*"
+coverage = "*"
+flake8 = "*"
 pylint = "*"
 pytest = "*"
-# sphinx = ">=5.3.0"
 black = "*"
+pytest-cov = "*"
+isort = "*" # organize imports
+pyscaffold = "*" # project scaffolding
+
+# [tool.doc.*] custom toml sections to capture doc urls
+[tool.doc.poetry.dependencies]
+toml = ["", "https://toml.io/en/"]
+networkx = [ "https://networkx.org/documentation/stable/reference/",
+    "https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.traversal.depth_first_search.dfs_postorder_nodes.html", ]
+fire = [ "https://google.github.io/python-fire/guide/", ]
+pydantic = [ "https://docs.pydantic.dev/latest/", ]
+invoke = [ "https://www.pyinvoke.org/", ]
+
+[tool.doc.poetry.dev-dependencies]
+bumpversion = [ "https://pypi.org/project/bumpversion/", ]
+coverage = [ "https://coverage.readthedocs.io/en/coverage-5.5/", ]
+flake8 = [ "https://flake8.pycqa.org/en/latest/", ]
+pylint = [ "https://pylint.pycqa.org/en/latest/", ]
+pytest = [ "https://docs.pytest.org/en/latest/", ]
+pytest-cov = [ "https://pytest-cov.readthedocs.io/en/latest/", ]
+black = [ "https://black.readthedocs.io/en/stable/", ]
+isort = [ "https://pycqa.github.io/isort/", ]
+pyscaffold = [ "https://pyscaffold.org/en/stable/", ]
+
+
+
+
+
 
 [tool.poetry.scripts]
 # poetry run {pkg,graph,...}
@@ -68,6 +97,18 @@ build-backend = "poetry.masonry.api"
 
 [tool.black]
 line-length = 120
+
+[tool.isort]
+profile = "black"
+# line_length = 120
+include_trailing_comma = true
+force_single_line = false
+multi_line_output = 3
+known_first_party = ["fsm"]
+# known_third_party = ["django", "numpy", "requests"]
+# sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+# default_section = "THIRDPARTY"
+
 
 # for pipx
 [project.scripts]

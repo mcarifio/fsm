@@ -1,0 +1,81 @@
+# pyproject.toml describes this project ${tool.poetry.name}
+# poetry's take on it: https://python-poetry.org/docs/pyproject/
+# python's take on it:
+
+[tool]
+[tool.poetry]
+name = "fsm"
+version = "0.1.0"
+description = "fsm, the federated software manager"
+authors = ["Mike Carifio <mike@carif.io>"]
+readme = "README.md"
+homepage = "https://github.com/mcarifio/fsm" ## TODO mike@carif.io: use gh gist.io
+repository = "https://github.com/mcarifio/fsm" ## see [[tool.poetry.source]]
+documentation = "https://docs.readthedocs.io/fsm/en/stable/"  ## TODO mike@carif.io: populate this url from github docs.
+classifiers=[
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.10',
+]
+# installed in poetry venv as ${tool.poetry.name}
+packages = [ { include = "fsm" } ]
+
+[[tool.poetry.source]]
+name = "private"
+url = "https://github.com/mcarifio/fsm"
+
+# [tools.poetry.include]
+# files =  [ "*.toml", "*.md" ]
+
+# poetry install
+[tool.poetry.dependencies]
+# The python type statement for type aliases arrives with python 3.10, enum.NamedDict() in 3.13.
+python = ">=3.10,<4"
+toml = "*"
+networkx = "*"
+google-fire = "*"
+
+[tool.poetry.dev-dependencies]
+# bumpversion = "*"
+# coverage = "*"
+# flake8 = "*"
+# invoke = "*"
+# isort = "*"
+pylint = "*"
+pytest = "*"
+# sphinx = ">=5.3.0"
+black = "*"
+
+[tool.poetry.scripts]
+# poetry run {pkg,graph,...}
+pkg = "fsm.pkg:main"
+graph = "fsm.graph:main"
+repo = "fsm.repo:main"
+resolver = "fsm.resolver:main"
+client = "fsm.client:main"
+# format = "black:main"  ## run the installed version of black: `poetry run black .`
+# pwd = "echo ${PWD}"
+# pyenv = "curl -sSL https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | PYENV_ROOT=bin bash "
+
+[build-system]
+requires = [ "poetry-core>=1.0.0" ]
+build-backend = "poetry.masonry.api"
+
+# [tool.isort]
+# profile = "black"
+
+[tool.black]
+line-length = 120
+
+# for pipx
+[project.scripts]
+# python -m pipx run git+https://github.com/mcarifio/fsm fsm
+fsm = "fsm.cli:main"
+
+[project.gui-scripts]
+# python -m pipx run git+https://github.com/mcarifio/fsm fsm
+fsmgui = "fsm.gui:main"
+
+

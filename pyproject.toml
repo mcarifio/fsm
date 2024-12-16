@@ -85,7 +85,7 @@ pyscaffold = [ "https://pyscaffold.org/en/stable/", ]
 fsm_cli = "fsm.cli:main"
 fsm_pkg = "fsm.pkg:main"
 fsm_graph = "fsm.graph:main"
-fsm_repo = "fsm.repo:main"
+fsm_pkgrepo = "fsm.pkgrepo:main"
 fsm_resolver = "fsm.resolver:main"
 # format = "black:main"  ## run the installed version of black: `poetry run black .`
 # pwd = "echo ${PWD}"
@@ -113,13 +113,13 @@ known_first_party = ["fsm"]
 # default_section = "THIRDPARTY"
 
 
-# for pipx
-[project.scripts]
-# python -m pipx run -spec git+https://github.com/mcarifio/fsm fsm version
-fsm = "fsm.cli:main"
-
-[project.gui-scripts]
-# python -m pipx run --spec git+https://github.com/mcarifio/fsm fsm_gui version
-fsm_gui = "fsm.gui:main"
+## for pipx
+#[project.scripts]
+## python -m pipx run -spec git+https://github.com/mcarifio/fsm fsm version
+#fsm = "fsm.cli:main"
+#
+#[project.gui-scripts]
+## python -m pipx run --spec git+https://github.com/mcarifio/fsm fsm_gui version
+#fsm_gui = "fsm.gui:main"
 
 

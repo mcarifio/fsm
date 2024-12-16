@@ -87,6 +87,8 @@ fsm_pkg = "fsm.pkg:main"
 fsm_graph = "fsm.graph:main"
 fsm_pkgrepo = "fsm.pkgrepo:main"
 fsm_resolver = "fsm.resolver:main"
+fsm_transaction = "fsm.transaction:main"
+
 # format = "black:main"  ## run the installed version of black: `poetry run black .`
 # pwd = "echo ${PWD}"
 # pyenv = "curl -sSL https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | PYENV_ROOT=bin bash "

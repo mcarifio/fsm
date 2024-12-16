@@ -1,5 +1,5 @@
 """
-Module dispatcher dispatches an "action" verb such as `main` or `test` to a function in that module with a stylized name,
+Module util dispatches an "action" verb such as `main` or `test` to a function in that module with a stylized name,
 e.g. `on_main(argv:list[str])` `or `on_test(argv:list[str])`. This is a smaller and self-contained version of the google-fire python package.
 
 The benefits of a dispatcher are: 1) it makes single file python modules invocable at the command line, e.g.
@@ -10,7 +10,6 @@ and dispatching usage, although stylized, can initially confuse: `if __name__ ==
 """
 
 import logging
-
 logger = logging.getLogger(__name__)
 import sys
 import inspect

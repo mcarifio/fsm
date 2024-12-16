@@ -27,12 +27,14 @@ import pathlib
 import subprocess
 import re
 
-import unittest
+import fire
+import box
+import pytest
 import inspect
 import typing as t
 import enum  # for Package.Kind
-from . import dispatcher
-from .checker import check
+from fsm import util
+from fsm.checker import check
 
 class Version:
     # TODO mike@carif.io deferred: the semantics of a package version really depend on the package type, e.g. `rpm`, `apt` and so forth.
@@ -268,100 +270,91 @@ def packagify(rest: t.List[json]) -> t.List[Package]:
     """
     return [Package(**p) for p in rest]
 
+@pytest.fixture(scope="module")
+def testcases():
+    """
+    Create test cases for methods of class Tests
+    :return: a box (dict) of keys:values, each key is a test case name and each value is the value.
+    """
+    return box.Box(key="a value")
 
-class TestCase(unittest.TestCase):
-    def test_always_passes(self):
-        self.assertTrue(True)
+class Tests:
+    def test_always_passes(self, testcases):
+        assert True
 
-    def test_missing_pathname(self):
-        with self.assertRaises(FileNotFoundError):
+    def test_testcases(self, testcases):
+        assert testcases.key == "a value"
+
+    def test_missing_pathname(self, testcases):
+        with pytest.raises(FileNotFoundError):
             jsonify([pathlib.Path("missing file")])
 
     def test_string2empty(self):
-        with self.assertRaises(json.JSONDecodeError):
+        with pytest.raises(json.JSONDecodeError):
             result = jsonify([io.StringIO("")])
 
     def test_justbrackets(self):
         result = jsonify([io.StringIO("{}")])
-        self.assertEqual(result, [{}])
+        assert result == [{}]
 
     def test_string2json(self):
         result = jsonify1(io.StringIO("{}"))
-        self.assertEqual(result, {})
+        assert result == {}
         result = jsonify([io.StringIO('{"x": 1}')])
-        self.assertEqual(result, [{"x": 1}])
+        assert result == [{"x": 1}]
 
     def test_package_json(self):
         result = jsonify([io.StringIO('{"name": "emacs", "dependencies": [ "emacs-core", "emacs-other" ]}')])
-        self.assertEqual(result, [{"name": "emacs", "dependencies": ["emacs-core", "emacs-other"]}])
+        assert result == [{"name": "emacs", "dependencies": ["emacs-core", "emacs-other"]}]
 
     def test_json2package_nodependencies(self):
         # note **p is splatting in the dictionary into Package's constructor __init__. Hacky.
         result = packagify(jsonify([io.StringIO('{"name": "emacs"}')]))
-        self.assertEqual(len(result), 1)
+        assert len(result) == 1
         first = result[0]
-        self.assertEqual(first.name, "emacs")
-        self.assertEqual(first.dependencies, [])
+        assert first.name == "emacs"
+        assert first.dependencies == []
 
     def test_json2package(self):
         # note **p is splatting in the dictionary into Package's constructor __init__. Hacky.
         result = packagify(jsonify([io.StringIO('{"name": "emacs", "dependencies": [ "emacs-core", "emacs-other" ]}')]))
-        self.assertEqual(len(result), 1)
+        assert len(result) == 1
         first = result[0]
-        self.assertEqual(first.name, "emacs")
-        self.assertEqual(first.dependencies, ["emacs-core", "emacs-other"])
+        assert first.name == "emacs"
+        assert first.dependencies == ["emacs-core", "emacs-other"]
 
     # TODO mike@carif.io: need a lot more tests
 
 
 # The possible actions that dispatcher dispatches to, e.g. `'version'` calls `on_version(list[str])`
-def on_version(rest: list[str]):
+def version(*rest: tuple[str]):
     """
     Report the version of this module a.k.a. `__version__` (if it's supplied)
-    :param rest: ignored
+    :param *rest: ignored
     :return: None
     """
-    print(globals().get("__version__", "tbs"))
+    return globals().get("__version__", "unknown")
 
 
-def on_about(rest: list[str]):
+def about(*rest: tuple[str]):
     """
     Describe this module in some way, tbs.
     :param rest:
     :return:
     """
-    print(sys.modules[__name__].__doc__, file=sys.stderr)
+    print(__doc__)
 
-
-def on_runner(rest: list[str]):
+def pt(*rest: tuple[str]):
     """
-    A more manual and explicit `on_test()` stubbed out for later refinement.
-    :param rest: ignored
-    :return: bool, True means the suite succeeded, False otherwise.
+    Run all pytests in class Tests in this module. Keeps implementation and testcases together in a single file.
+    :param *rest: additional arguments to pytest.main(), not actually used yet
+    :return: 0 if all tests pass, >0 otherwise (whatever pytest.main() returns)
     """
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    suite.addTests(loader.loadTestsFromTestCase(TestCase))
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
-
-
-def on_test(rest: list[str]):
-    """
-    Run all classes derived from unittest.TestCase in this module.
-    Keeps implementation and testcases together in a single file.
-    :param rest: additional arguments to unittest.main()
-    :return:
-    """
-    unittest.main(module=sys.modules[__name__], verbosity=2, argv=["test"], *rest)
-
-
-# def on_main(rest: list[str]):
-#     print("on_main", rest, file=sys.stderr)
+    return pytest.main([ "--verbose", *sys.argv[2:], __file__ ])
 
 
 def main():
-    return dispatcher.mkdispatch(globals())(sys.argv[1:] or ["test"])
+    return fire.Fire()
 
 
 if __name__ == "__main__":

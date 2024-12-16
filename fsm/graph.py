@@ -40,7 +40,7 @@ import pytest
 import box
 import typing as t
 import fire
-# from . import dispatcher
+from fsm import util
 
 
 class RecursionLimit:
@@ -226,7 +226,11 @@ class Node:
 
 @pytest.fixture(scope="module")
 def testcases():
-    return box.Box(nothing=Node(), smallest=Node(), smallest_make=Node.make())
+    """
+    Create test cases for methods of class Tests
+    :return: a box (dict) of keys:values, each key is a test case name and each value is the value.
+    """
+    return box.Box(key="a value", nothing=Node(), smallest=Node(), smallest_make=Node.make())
 
 
 class Tests:
@@ -295,6 +299,9 @@ class Tests:
 
     def test_always_passes(self, testcases):
         assert True;
+
+    def test_testcases(self, testcases):
+        assert testcases.key == "a value"
 
     def test_smallest_node(self, testcases):
         smallest = testcases.smallest
@@ -392,7 +399,6 @@ def about(*rest: list[str]):
 
 
 def pt(*rest: list[str]):
-    # TODO mike@carif.io: dispatcher polluates(?) unittest.main() so I need to state the module explicitly.
     exit(pytest.main(["--verbose", *sys.argv[2:], __file__]))
 
 

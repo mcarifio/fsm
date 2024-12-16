@@ -12,6 +12,8 @@ with t.Transaction(o) as tm:
 
 # Forward referencing of types, e.g. typehints in class Node below.
 from __future__ import annotations
+import logging
+logger = logging.getLogger(__name__)  # logger.setLevel(logging.DEBUG)
 
 __version__ = "0.1.0"
 __author__ = "Mike Carifio <mike@carif.io>"
@@ -19,17 +21,15 @@ __author__ = "Mike Carifio <mike@carif.io>"
 import copy
 import io
 import json
-import logging
-
-logger = logging.getLogger(__name__)  # logger.setLevel(logging.DEBUG)
-
 import sys
 import os
 
-import unittest
+import fire
+import box
+import pytest
 import typing as t
-from . import dispatcher
-from . import pkg
+from fsm import util
+from fsm import pkg
 
 
 class Transaction:
@@ -49,71 +49,64 @@ class Transaction:
             self.o = copy.copy(self.before)
         return False
 
+@pytest.fixture(scope="module")
+def testcases():
+    """
+    Create test cases for methods of class Tests
+    :return: a box (dict) of keys:values, each key is a test case name and each value is the value.
+    """
+    result = box.Box(key="a value", action=lambda o: print(o))
+    result.around_action = Transaction(result.action)
+    return result
 
-class TestCase(unittest.TestCase):
-    def setUp(self):
-        self.o = 1
-        self.nothing = Transaction(self.o)
-        self.instances = [self.nothing]
 
-    def test_always_passes(self):
-        self.assertTrue(True)
+class Tests:
 
-    def test_bad_transaction(self):
-        with self.assertRaises(ValueError):
+    def test_always_passes(self, testcases):
+        assert True
+
+    def test_bad_transaction(self, testcases):
+        with pytest.raises(ValueError):
             return Transaction(None)
 
     # TODO mike@carif.io: need a lot more tests
 
 
-def on_version(rest: list[str]):
+def version(*rest: tuple[str]):
     """
     Report the version of this module a.k.a. `__version__` (if it's supplied)
     :param rest: ignored
     :return: None
     """
-    print(globals().get("__version__", "tbs"))
+    return globals().get("__version__", "unknown")
 
 
-def on_about(rest: list[str]):
+def about(*rest: tuple[str]):
     """
     Describe this module in some way, tbs.
     :param rest:
     :return:
     """
-    print(*rest)
+    print(__doc__)
 
-
-def on_runner(rest: list[str]):
+def pt(*rest: tuple[str]):
     """
-    A more manual and explicit `on_test()` stubbed out for later refinement.
-    :param rest: ignored
-    :return: bool, True means the suite succeeded, False otherwise.
+    Run all pytests in class Tests in this module. Keeps implementation and testcases together in a single file.
+    :param *rest: additional arguments to pytest.main(), not actually used yet
+    :return: 0 if all tests pass, >0 otherwise (whatever pytest.main() returns)
     """
-    suite = unittest.TestSuite()
-    loader = unittest.TestLoader()
-    suite.addTests(loader.loadTestsFromTestCase(TestCase))
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
+    return pytest.main([ "--verbose", *sys.argv[2:], __file__ ])
 
 
-def on_test(rest: list[str]):
+def install(rest: tuple[str]) -> t.List[json]:
     """
-    Run all classes derived from unittest.TestCase in this module. Keeps implementation and testcases together in
-    a single file.
-    :param rest: additional arguments to unittest.main()
-    :return:
+    fetch a set of packages described by rest in a transactional fashion
     """
-    unittest.main(module=sys.modules[__name__], verbosity=2, argv=["test"], *rest)
-
-
-def on_install(rest: list[str]) -> t.List[pkg.Package]:
-    print(dispatcher.caller(), *rest)
+    print(f"{util.caller()} tbs", rest, file=sys.stderr)
 
 
 def main():
-    dispatcher.mkdispatch(globals())((sys.argv[1:] or ["test"]))
-
+    return fire.Fire()
 
 if __name__ == "__main__":
     main()

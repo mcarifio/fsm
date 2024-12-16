@@ -17,11 +17,22 @@ import sys
 import pytest
 import typing as t
 import fire
-# from . import dispatcher
-from . import pkg
-from . import graph
-from . import repo
-from . import resolver
+import box
+from fsm import util
+from fsm import pkg
+from fsm import graph
+from fsm import repo
+from fsm import resolver
+
+
+@pytest.fixture(scope="module")
+def testcases():
+    """
+    Create test cases for methods of class Tests
+    :return: a box (dict) of keys:values, each key is a test case name and each value is the value.
+    """
+    return box.Box(key="a value")
+
 
 class Tests:
     """
@@ -30,48 +41,82 @@ class Tests:
 
     You can run the tests with: `python -m fsm.cli pt` or `pytest fsm/cli.py`
     """
-    def test_always_passes(self):
+    def test_always_passes(self, testcases):
         assert True
 
+    def test_testcases(self, testcases):
+        assert testcases.key == "a value"
 
-def version(*rest: list[str]):
+
+
+
+
+def version(*rest: tuple[str])->str:
     """
     Report the version of this module a.k.a. `__version__` (if it's supplied)
     :param rest: ignored
     :return: None
     """
-    print(globals().get("__version__", "tbs"))
+    result = globals().get("__version__", "unknown")
+    # print(result)
+    return result
 
 
-def about(*rest: list[str]):
+def about(*rest: tuple[str]):
     """
-    Describe this module in some way, tbs.
-    :param rest:
+    Describe this module using the module docstring.
+    :param *rest: ignored
     :return:
     """
     print(__doc__)
 
-def pt(*rest: list[str])->int:
+def pt(*rest: tuple[str])->int:
     """
-    Run all tests in class Tests in this module. Keeps implementation and testcases together in
-    a single file.
-    :param rest: additional arguments to pytest.main(), not actually used yet
-    :return: 0 if all tests pass, >0 otherwise
+    Run all pytests in class Tests in this module. Keeps implementation and testcases together in a single file.
+    :param *rest: additional arguments to pytest.main(), not actually used yet
+    :return: 0 if all tests pass, >0 otherwise (whatever pytest.main() returns)
     """
-    exit(pytest.main([ "--verbose", *sys.argv[2:], __file__ ]))
+    return pytest.main([ "--verbose", *sys.argv[2:], __file__ ])
 
-
-def install(*rest: list[str]):
+def install(*rest: tuple[str]):
     """
     install a set of packages described by rest in a transactional fashion
     """
-    print("install tbs", rest, file=sys.stderr)
+    print(f"{util.caller()} tbs", rest, file=sys.stderr)
+
+def remove(*rest: tuple[str]):
+    """
+    remote a set of packages described by rest in a transactional fashion
+    """
+    print(f"{util.caller()} tbs", rest, file=sys.stderr)
+
+def fetch(*rest: tuple[str]):
+    """
+    fetch a set of packages described by rest in a transactional fashion
+    """
+    print(f"{util.caller()} tbs", rest, file=sys.stderr)
+
+def find(*rest: tuple[str]):
+    """
+    find a set of packages described by rest in a transactional fashion
+    """
+    print(f"{util.caller()} tbs", rest, file=sys.stderr)
+
+
 
 
 def main():
+    """
+    The main entry point for the command line interface, run directly via setuptools.
+    :return:
+    """
     # fire dispatches by verb == function name, e.g. 'pt' => pt()
-    fire.Fire()
+    return fire.Fire()
 
-# dispatched via setuptools
+# from the command line:
+#  directly: chmod a+x fsm/cli.py; PYTHONPATH=. ./fsm/cli.py version
+#  indirectly as a module: python -m fsm.cli version or optionally PYTHONPATH=. python -m fsm.cli version
+#  indirectly as a script: PYTHONPATH=.
 if __name__ == "__main__":
     main()
+

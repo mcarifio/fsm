@@ -6,10 +6,6 @@ Module repo captures the set union of all packages (pkg.Package) available for i
 # Forward referencing of types, e.g. typehints in class Node below.
 from __future__ import annotations
 import logging
-
-from ansible_collections.fortinet.fortios.plugins.modules.fortios_switch_controller_qos_dot1p_map import \
-    switch_controller_qos_dot1p_map
-
 logger = logging.getLogger(__name__)  # logger.setLevel(logging.DEBUG)
 
 __version__ = "0.1.0"
@@ -20,8 +16,9 @@ import json
 import sys
 import os
 
-import pytest
+import fire
 import box
+import pytest
 import typing as t
 from fsm import util
 from fsm import pkg

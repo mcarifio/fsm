@@ -30,7 +30,6 @@ import re
 import fire
 import box
 import pytest
-import inspect
 import typing as t
 import enum  # for Package.Kind
 from fsm import util

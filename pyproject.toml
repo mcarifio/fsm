@@ -80,7 +80,9 @@ pyscaffold = [ "https://pyscaffold.org/en/stable/", ]
 
 
 [tool.poetry.scripts]
-# poetry run {pkg,graph,...}
+# poetry run {fsm, fsm_pkg,fsm_graph,...}
+# python -m pipx run -spec git+https://github.com/mcarifio/fsm fsm version
+fsm = "fsm.cli:main"
 fsm_pkg = "fsm.pkg:main"
 fsm_graph = "fsm.graph:main"
 fsm_repo = "fsm.repo:main"

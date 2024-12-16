@@ -46,7 +46,7 @@ export repo=https://github.com/mcarifio/fsm
 export name=$(basename ${repo})
 git clone ${repo} ~/src/${name} && cd ~/src/${name}
 poetry install
-poetry run sanitycheck  ## run a sanity check to make sure your dev environment works 
+poetry run sanitycheck  ## run a sanity check to make sure your dev environment works
 ```
 
 ### Lore
@@ -90,7 +90,7 @@ collected 23 items
 client.py .                                                                                                                                      [  4%]
 graph.py .........                                                                                                                               [ 43%]
 pkg.py ........                                                                                                                                  [ 78%]
-repo.py ...                                                                                                                                      [ 91%]
+pkgrepo.py ...                                                                                                                                      [ 91%]
 resolver.py ..                                                                                                                                   [100%]
 
 ================================================================== 23 passed in 0.43s ==================================================================

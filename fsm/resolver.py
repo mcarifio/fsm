@@ -24,7 +24,7 @@ import typing as t
 from fsm import util
 from fsm import pkg
 from fsm import graph
-from fsm import repo
+from fsm import pkgrepo
 
 
 class Resolver:
@@ -43,8 +43,23 @@ class Resolver:
         return result
 
     @staticmethod
-    def available(root: graph.Node, r: repo.Repo) -> t.List[pkg.Package]:
+    def available(root: graph.Node, r: pkgrepo.Repo) -> t.List[pkg.Package]:
         all(p in r for p in Resolver.resolve(root))
+
+
+@pytest.fixture(scope="module")
+def testcases():
+    """
+    Create test cases for methods of class Tests
+    :return: a box (dict) of keys:values, each key is a test case name and each value is the value.
+    """
+    result = box.Box(key="a value", nothing=pkgrepo.Repo(), smallest=pkgrepo.Repo(), smallest_make=pkgrepo.Repo.make(),
+                     emacs_core=pkg.Package(name="emacs-core"), emacs_gtk=pkg.Package(name="emacs-gtk"),
+                     emacs_lisp=pkg.Package(name="emacs-lisp", dependencies=[pkg.Package(name="emacs-core")]),
+                     emacs=pkg.Package(name="emacs", dependencies=[pkg.Package(name="emacs-lisp"), ]))
+    result.emacs_repo = pkgrepo.Repo(packages=[result.emacs, result.emacs_lisp, result.emacs_core, result.emacs_gtk])
+    return result
+
 
 class Tests:
 
@@ -54,8 +69,9 @@ class Tests:
     def test_a_value(self, testcases):
         assert testcases.key == "a value"
 
+    @pytest.mark.skip("TODO mike@carif.io: create emacs_graph test case")
     def test_emacs(self, testcases):
-        traversal = Resolver.resolve(self.emacs_graph)
+        traversal = Resolver.resolve(testcases.emacs)
         assert len(traversal) == 4
         print(*[p.name for p in traversal], file=sys.stderr)  ## italian debugging
         assert traversal == [testcases.emacs_gtk, testcases.emacs_core, testcases.emacs_lisp, testcases.emacs]

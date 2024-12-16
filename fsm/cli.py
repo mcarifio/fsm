@@ -21,7 +21,7 @@ import box
 from fsm import util
 from fsm import pkg
 from fsm import graph
-from fsm import repo
+from fsm import pkgrepo
 from fsm import resolver
 
 
@@ -57,9 +57,8 @@ def version(*rest: tuple[str])->str:
     :param rest: ignored
     :return: None
     """
-    result = globals().get("__version__", "unknown")
-    # print(result)
-    return result
+    return globals().get("__version__", "unknown")
+
 
 
 def about(*rest: tuple[str]):

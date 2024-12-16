@@ -43,13 +43,13 @@ invoke = "*"
 httpx = "*"
 # aoihttp = "*"
 python-box = "*"
+pytest = "*"
 
 [tool.poetry.dev-dependencies] # see [tool.doc.poetry.dev-dependencies] for doc urls
 bumpversion = "*"
 coverage = "*"
 flake8 = "*"
 pylint = "*"
-pytest = "*"
 black = "*"
 pytest-cov = "*"
 isort = "*" # organize imports
@@ -87,7 +87,6 @@ fsm_pkg = "fsm.pkg:main"
 fsm_graph = "fsm.graph:main"
 fsm_repo = "fsm.repo:main"
 fsm_resolver = "fsm.resolver:main"
-fsm_client = "fsm.client:main"
 # format = "black:main"  ## run the installed version of black: `poetry run black .`
 # pwd = "echo ${PWD}"
 # pyenv = "curl -sSL https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | PYENV_ROOT=bin bash "

@@ -79,16 +79,13 @@ pyscaffold = [ "https://pyscaffold.org/en/stable/", ]
 
 
 
-
-
-
 [tool.poetry.scripts]
 # poetry run {pkg,graph,...}
-pkg = "fsm.pkg:main"
-graph = "fsm.graph:main"
-repo = "fsm.repo:main"
-resolver = "fsm.resolver:main"
-client = "fsm.client:main"
+fsm_pkg = "fsm.pkg:main"
+fsm_graph = "fsm.graph:main"
+fsm_repo = "fsm.repo:main"
+fsm_resolver = "fsm.resolver:main"
+fsm_client = "fsm.client:main"
 # format = "black:main"  ## run the installed version of black: `poetry run black .`
 # pwd = "echo ${PWD}"
 # pyenv = "curl -sSL https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | PYENV_ROOT=bin bash "
@@ -117,11 +114,11 @@ known_first_party = ["fsm"]
 
 # for pipx
 [project.scripts]
-# python -m pipx run git+https://github.com/mcarifio/fsm fsm
+# python -m pipx run -spec git+https://github.com/mcarifio/fsm fsm version
 fsm = "fsm.cli:main"
 
 [project.gui-scripts]
-# python -m pipx run git+https://github.com/mcarifio/fsm fsm
-fsmgui = "fsm.gui:main"
+# python -m pipx run --spec git+https://github.com/mcarifio/fsm fsm_gui version
+fsm_gui = "fsm.gui:main"
 
 

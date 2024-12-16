@@ -110,7 +110,7 @@ def pt(*rest: tuple[str]):
     """
     return pytest.main([ "--verbose", *sys.argv[2:], __file__ ])
 
-def install(rest: tuple[str]) -> t.List[json]:
+def install(*rest: tuple[str]) -> t.List[json]:
     """
     fetch a set of packages described by rest in a transactional fashion
     """

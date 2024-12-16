@@ -32,14 +32,8 @@ def actors(bindings, prefix: str = "on_") -> dict[str, types.FunctionType]:
     :param prefix: how to match the functions
     :return: a dictionary of function names to functions, suitable for later dispatching.
     """
-    return {
-        a[len(prefix) :]: bindings[a]
-        for a in bindings.keys()
-        if a.startswith(prefix) and isinstance(bindings[a], types.FunctionType)
-    }
+    return { a[len(prefix):]: bindings[a] for a in bindings.keys() if a.startswith(prefix) and isinstance(bindings[a], types.FunctionType) }
 
-
-#
 def mkdispatch(bindings):
     """
     Make and return a closure that will dispatch `action` to `on_action()`, for example `main` to `on_main()` based on the global

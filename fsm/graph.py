@@ -391,7 +391,7 @@ class Tests:
 
 
 def version(*rest: list[str]):
-    print(globals()["__version__"] or "unknown")
+    return (globals()["__version__"] or "unknown")
 
 
 def about(*rest: list[str]):
